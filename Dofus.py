@@ -253,79 +253,42 @@ for n in range (1,15):
 
 """
 
-Tab = [['0' for x in range(14)] for i in range(40)]
-
-FirstPoint=[147,786]
-for i in range(0,40):
-    #print("\n--------------- Ligne ",i+1," ---------------\n")
-    print("chargement ", ((i + 1) * 100) / 40, "%")
-    x = FirstPoint[0]
-    y = FirstPoint[1]
-    for j in range (0,14):
-        Tab[abs(i-39)][j]=PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)]
-        """
-        #print(j+1," => x = ",x," => ",PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)])
-        if PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)] == (129, 118, 86) or \
-                PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)] == (147, 135, 98):
-            Tab[abs(i-39)][j]="0"
-            print(" =>  zone de jeu")
-        elif PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)] == (91, 83, 61):
-            Tab[abs(i-39)][j]="M"
-            print(" =>  mur")
-        elif PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)] == (0, 0, 0):
-            Tab[abs(i-39)][j]="V"
-            print(" =>  vide")
-        elif PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)] == (193, 49, 35) or \
-                PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)] == (189, 46, 33):
-            Tab[abs(i-39)][j]="J"
-            print(" =>  zone pour joueur")
-        elif PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)] == (25, 126, 204) or \
-                PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)] == (29, 129, 206):
-            Tab[abs(i-39)][j]="E"
-            print(" =>  zone pour ennemie")
+def FightPlace() :
+    Tab = [['0' for x in range(14)] for i in range(40)] # creation d'un tableau statique 2d
+    FirstPoint=[147,786] # position du premier carré de jeu en bas à gauche de l'ecran
+    for i in range(0,40):
+        print("chargement ", ((i + 1) * 100) / 40, "%")
+        x = FirstPoint[0]
+        y = FirstPoint[1]
+        for j in range (0,14):
+            Tab[abs(i-39)][j]=PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)]
+            x+=77
+        if i%2==0 :
+            FirstPoint[0] -= 38
+            FirstPoint[1] -= 19
         else :
-            Tab[i][j]="A"
-            print(" =>  indescriptible")
-        #print("ligne : ",i+1," / Colonne : ",j+1)
-        """
-        """
-        mouse.position = (x, y)
-        
-        if PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)] == (129, 118, 86) or \
-                PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)] == (147, 135, 98):
-            print(PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)]," =>  zone de jeu")
-        elif PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)] == (91, 83, 61):
-            print(PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)]," =>  mur")
-        elif PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)] == (0, 0, 0):
-            print(PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)]," =>  vide")
-        elif PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)] == (193, 49, 35):
-            print(PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)]," =>  zone pour joueur")
-        elif PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)] == (98, 66, 123):
-            print(PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)]," =>  zone pour ennemie")
+            FirstPoint[0] += 38
+            FirstPoint[1] -= 19
+    return Tab
+
+def FightPlaceQuicker() : # pas plus rapide...
+    Tab=[]
+    FirstPoint = [147, 786]
+    for i in range(0,40):
+        print("chargement ", ((i + 1) * 100) / 40, "%")
+        Tab.append([])
+        x = FirstPoint[0]
+        y = FirstPoint[1]
+        for j in range(0,15):
+            Tab[i].append(PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)])
+            x += 77
+        if i % 2 == 0:
+            FirstPoint[0] -= 38
+            FirstPoint[1] -= 19
         else:
-            print(PIL.ImageGrab.grab().load()[round(x * 1.25), round(y * 1.25)]," =>  indescriptible")
-        """
-        """
-        press = False
-        while press == False:
-            if keyboard.is_pressed("p"):
-                press = True
-            else:
-                continue
-        """
-        if keyboard.is_pressed("s"): break
-        #time.sleep(0.01)
-        x+=77
-
-    if i%2==0 :
-        FirstPoint[0] -= 38
-        FirstPoint[1] -= 19
-    else :
-        FirstPoint[0] += 38
-        FirstPoint[1] -= 19
-
-
-
+            FirstPoint[0] += 38
+            FirstPoint[1] -= 19
+    return Tab
 
 def AfficherTableau(Tab):
     for n in range(0, 40):
@@ -335,27 +298,12 @@ def AfficherTableau(Tab):
             Tab[n].reverse()
         else:
             Tab[n].append('')
-
     colorama.init()
     for i in range(0,40):
         print("")
         for j in range(0,15):
-            """
-            if Tab[i][j]=="J" :
-                print("[",Fore.BLUE + Style.BRIGHT + Tab[i][j] + Style.RESET_ALL,"]",end="")
-            elif Tab[i][j]=="E":
-                print("[", Fore.RED + Style.BRIGHT + Tab[i][j] + Style.RESET_ALL, "]", end="")
-            elif Tab[i][j]=="M":
-                print("[", Fore.YELLOW + Style.BRIGHT + Tab[i][j] + Style.RESET_ALL, "]", end="")
-            elif Tab[i][j]=="V":
-                print("[", Fore.BLACK + Style.BRIGHT + Tab[i][j] + Style.RESET_ALL, "]", end="")
-            elif Tab[i][j]=="0":
-                print("[", Fore.WHITE + Style.BRIGHT + Tab[i][j] + Style.RESET_ALL, "]", end="")
-            else :
-                print("[ A ]",end="")
-            """
             if Tab[i][j] == (129, 118, 86) or Tab[i][j] == (147, 135, 98): #case vide
-                print(" ", Fore.WHITE + Style.BRIGHT + "◊" + Style.RESET_ALL, " ", end="")
+                print(" ", Fore.CYAN + Style.BRIGHT + "◊" + Style.RESET_ALL, " ", end="")
             elif Tab[i][j] == (91, 83, 61): # Mur
                 print(" ", Fore.YELLOW + Style.BRIGHT + "◊" + Style.RESET_ALL, " ", end="")
             elif Tab[i][j] == (0, 0, 0): # Vide
@@ -366,12 +314,42 @@ def AfficherTableau(Tab):
                 print(" ",Fore.RED + Style.BRIGHT + "◊" + Style.RESET_ALL," ", end="")
             elif Tab[i][j] == '':  # pour la beaute du tab
                 print("  ", end="")
+            elif Tab[i][j] == (91, 151, 61) or Tab[i][j] == (103, 163, 70): # place où je peux me déplacer
+                print(" ",Fore.GREEN + Style.BRIGHT + "◊" + Style.RESET_ALL," ", end="")
             else:
                 print("  ◊  ",end="")
-AfficherTableau(Tab)
 
-# case vide : (129, 118, 86) ou (147, 135, 98)
-# obstacle : (91, 83, 61)
-# vide : (0, 0, 0)
-# place pour le joueur : (193, 49, 35)
-# place pour les ennemies : (98, 66, 123)
+def WereIsPlayers(Tab):
+    for i in range(0,40):
+        for j in range(0,15):
+            if i<35 and Tab[i][j] != (129, 118, 86) and \
+                    Tab[i][j] != (147, 135, 98) and \
+                    Tab[i][j] != (91, 83, 61) and \
+                    Tab[i][j] != (0, 0, 0) and \
+                    Tab[i][j] != (193, 49, 35) and \
+                    Tab[i][j] != (189, 46, 33) and \
+                    Tab[i][j] != (25, 126, 204) and \
+                    Tab[i][j] != (29, 129, 206) and \
+                    Tab[i][j] != (91, 151, 61) and \
+                    Tab[i][j] != (103, 163, 70) and \
+                    Tab[i][j] != '':
+                print(Tab[i][j])
+
+
+
+Tab = FightPlace()
+AfficherTableau(Tab)
+WereIsPlayers(Tab)
+
+while 1:
+    pos = mouse.position
+    if WePassALevelCheck():
+        mouse.position = (754, 482)
+        mouse.press(Button.left)
+        mouse.release(Button.left)
+        mouse.position = (pos[0],pos[1])
+
+
+# En gros, au debut du fight on va cliquer sur une zone où le joueur peut aller à ce moment là on peut être sûr que
+# la couleur qu'on va récupérer à cette position est celle de notre joueur donc les autres cases avec des couleurs inconnues seront
+# forcément celles des ennemies. Big Brain !
